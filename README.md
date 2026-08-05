@@ -59,19 +59,32 @@ The portfolio is deployed using a secure, CDN-backed architecture designed for h
 ```
 cloud-portfolio/
 │
-├── website/              # Frontend files
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Actions CI/CD pipeline
+│
+├── website/                    # Frontend files
 │   ├── index.html
 │   ├── style.css
-│   └── script.js
+│   ├── script.js
+│   ├── favicon.png
+│   ├── robots.txt
+│   └── sitemap.xml
 │
-├── terraform/            # Infrastructure as Code
+├── terraform/                  # Infrastructure as Code
 │   ├── main.tf
+│   ├── provider.tf
 │   ├── variables.tf
 │   ├── outputs.tf
-│   └── provider.tf
+│   ├── versions.tf             # (recommended)
+│   ├── backend.tf              # (if using remote state)
+│   ├── terraform.tfvars.example
+│   └── modules/                # (optional, if using modules)
 │
-├── deploy.sh             # Deployment script
+├── .gitignore
+├── deploy.sh                   # Local deployment helper
 ├── README.md
+├── LICENSE                     # Optional
 ```
 
 ---
