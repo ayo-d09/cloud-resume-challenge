@@ -1,0 +1,568 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.4",
+  "serial": 25,
+  "lineage": "b9012602-55f6-cc2f-631c-9c3057b95a59",
+  "outputs": {
+    "cloudfront_url": {
+      "value": "d2f1jjtzlviij4.cloudfront.net",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_cloudfront_distribution",
+      "name": "cdn",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "aliases": [],
+            "anycast_ip_list_id": "",
+            "arn": "arn:aws:cloudfront::243768737939:distribution/E1SO7UQ83Q90P",
+            "caller_reference": "terraform-20260321204347838500000001",
+            "comment": null,
+            "connection_function_association": [],
+            "continuous_deployment_policy_id": "",
+            "custom_error_response": [],
+            "default_cache_behavior": [
+              {
+                "allowed_methods": [
+                  "GET",
+                  "HEAD"
+                ],
+                "cache_policy_id": "",
+                "cached_methods": [
+                  "GET",
+                  "HEAD"
+                ],
+                "compress": false,
+                "default_ttl": 0,
+                "field_level_encryption_id": "",
+                "forwarded_values": [
+                  {
+                    "cookies": [
+                      {
+                        "forward": "none",
+                        "whitelisted_names": []
+                      }
+                    ],
+                    "headers": [],
+                    "query_string": false,
+                    "query_string_cache_keys": []
+                  }
+                ],
+                "function_association": [],
+                "grpc_config": [
+                  {
+                    "enabled": false
+                  }
+                ],
+                "lambda_function_association": [],
+                "max_ttl": 0,
+                "min_ttl": 0,
+                "origin_request_policy_id": "",
+                "realtime_log_config_arn": "",
+                "response_headers_policy_id": "",
+                "smooth_streaming": false,
+                "target_origin_id": "s3-origin",
+                "trusted_key_groups": [],
+                "trusted_signers": [],
+                "viewer_protocol_policy": "redirect-to-https"
+              }
+            ],
+            "default_root_object": "index.html",
+            "domain_name": "d2f1jjtzlviij4.cloudfront.net",
+            "enabled": true,
+            "etag": "E23ZP02F085DFQ",
+            "hosted_zone_id": "Z2FDTNDATAQYW2",
+            "http_version": "http2",
+            "id": "E1SO7UQ83Q90P",
+            "in_progress_validation_batches": 0,
+            "is_ipv6_enabled": false,
+            "last_modified_time": "2026-03-21 20:43:51.501 +0000 UTC",
+            "logging_config": [],
+            "logging_v1_enabled": false,
+            "ordered_cache_behavior": [],
+            "origin": [
+              {
+                "connection_attempts": 3,
+                "connection_timeout": 10,
+                "custom_header": [],
+                "custom_origin_config": [],
+                "domain_name": "ayo-portfolio-site-12345.s3.us-east-1.amazonaws.com",
+                "origin_access_control_id": "E3C8NPFJDE0G19",
+                "origin_id": "s3-origin",
+                "origin_path": "",
+                "origin_shield": [],
+                "response_completion_timeout": 0,
+                "s3_origin_config": [],
+                "vpc_origin_config": []
+              }
+            ],
+            "origin_group": [],
+            "price_class": "PriceClass_All",
+            "restrictions": [
+              {
+                "geo_restriction": [
+                  {
+                    "locations": [],
+                    "restriction_type": "none"
+                  }
+                ]
+              }
+            ],
+            "retain_on_delete": false,
+            "staging": false,
+            "status": "Deployed",
+            "tags": {},
+            "tags_all": {},
+            "trusted_key_groups": [
+              {
+                "enabled": false,
+                "items": []
+              }
+            ],
+            "trusted_signers": [
+              {
+                "enabled": false,
+                "items": []
+              }
+            ],
+            "viewer_certificate": [
+              {
+                "acm_certificate_arn": "",
+                "cloudfront_default_certificate": true,
+                "iam_certificate_id": "",
+                "minimum_protocol_version": "TLSv1",
+                "ssl_support_method": ""
+              }
+            ],
+            "viewer_mtls_config": [],
+            "wait_for_deployment": true,
+            "web_acl_id": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_cloudfront_origin_access_control.oac",
+            "aws_s3_bucket.portfolio"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudfront_origin_access_control",
+      "name": "oac",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:cloudfront::243768737939:origin-access-control/E3C8NPFJDE0G19",
+            "description": "Access S3 securely",
+            "etag": "ETVPDKIKX0DER",
+            "id": "E3C8NPFJDE0G19",
+            "name": "portfolio-oac",
+            "origin_access_control_origin_type": "s3",
+            "signing_behavior": "always",
+            "signing_protocol": "sigv4"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "cloudfront_4xx_errors",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": [
+              "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts"
+            ],
+            "alarm_description": "Alert when CloudFront has high 4xx errors",
+            "alarm_name": "cloudfront-4xx-errors",
+            "arn": "arn:aws:cloudwatch:us-east-1:243768737939:alarm:cloudfront-4xx-errors",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "DistributionId": "E1SO7UQ83Q90P",
+              "Region": "Global"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 1,
+            "extended_statistic": "",
+            "id": "cloudfront-4xx-errors",
+            "insufficient_data_actions": [],
+            "metric_name": "4xxErrorRate",
+            "metric_query": [],
+            "namespace": "AWS/CloudFront",
+            "ok_actions": [],
+            "period": 300,
+            "region": "us-east-1",
+            "statistic": "Average",
+            "tags": {},
+            "tags_all": {},
+            "threshold": 1,
+            "threshold_metric_id": "",
+            "treat_missing_data": "missing",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "alarm_name": "cloudfront-4xx-errors",
+            "region": "us-east-1"
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_cloudfront_distribution.cdn",
+            "aws_cloudfront_origin_access_control.oac",
+            "aws_s3_bucket.portfolio",
+            "aws_sns_topic.alerts"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "portfolio",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::ayo-portfolio-site-12345",
+            "bucket": "ayo-portfolio-site-12345",
+            "bucket_domain_name": "ayo-portfolio-site-12345.s3.amazonaws.com",
+            "bucket_namespace": "global",
+            "bucket_prefix": "",
+            "bucket_region": "us-east-1",
+            "bucket_regional_domain_name": "ayo-portfolio-site-12345.s3.us-east-1.amazonaws.com",
+            "cors_rule": [],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "84ba026ff892d9fc7cb807dac287aa167a75e60ad3e52d74f66cdd8115c5f1ce",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z3AQBSTGFYJSTF",
+            "id": "ayo-portfolio-site-12345",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Condition\":{\"StringEquals\":{\"AWS:SourceArn\":\"arn:aws:cloudfront::243768737939:distribution/E1SO7UQ83Q90P\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudfront.amazonaws.com\"},\"Resource\":\"arn:aws:s3:::ayo-portfolio-site-12345/*\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": false,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "bucket": "ayo-portfolio-site-12345",
+            "region": "us-east-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_ownership_controls",
+      "name": "ownership",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "ayo-portfolio-site-12345",
+            "id": "ayo-portfolio-site-12345",
+            "region": "us-east-1",
+            "rule": [
+              {
+                "object_ownership": "BucketOwnerEnforced"
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "bucket": "ayo-portfolio-site-12345",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.portfolio"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "ayo-portfolio-site-12345",
+            "id": "ayo-portfolio-site-12345",
+            "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Condition\":{\"StringEquals\":{\"AWS:SourceArn\":\"arn:aws:cloudfront::243768737939:distribution/E1SO7UQ83Q90P\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudfront.amazonaws.com\"},\"Resource\":\"arn:aws:s3:::ayo-portfolio-site-12345/*\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "bucket": "ayo-portfolio-site-12345",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_cloudfront_distribution.cdn",
+            "aws_cloudfront_origin_access_control.oac",
+            "aws_s3_bucket.portfolio"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "block",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "block_public_acls": true,
+            "block_public_policy": true,
+            "bucket": "ayo-portfolio-site-12345",
+            "id": "ayo-portfolio-site-12345",
+            "ignore_public_acls": true,
+            "region": "us-east-1",
+            "restrict_public_buckets": true,
+            "skip_destroy": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "bucket": "ayo-portfolio-site-12345",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.portfolio"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_object",
+      "name": "js",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acl": null,
+            "arn": "arn:aws:s3:::ayo-portfolio-site-12345/script.js",
+            "bucket": "ayo-portfolio-site-12345",
+            "bucket_key_enabled": false,
+            "cache_control": "",
+            "checksum_algorithm": null,
+            "checksum_crc32": "",
+            "checksum_crc32c": "",
+            "checksum_crc64nvme": "",
+            "checksum_sha1": "",
+            "checksum_sha256": "",
+            "content": null,
+            "content_base64": null,
+            "content_disposition": "",
+            "content_encoding": "",
+            "content_language": "",
+            "content_type": "application/javascript",
+            "etag": "dbe44834a75d284336cf10e2ce0c9adc",
+            "force_destroy": false,
+            "id": "ayo-portfolio-site-12345/script.js",
+            "key": "script.js",
+            "kms_key_id": null,
+            "metadata": {},
+            "object_lock_legal_hold_status": "",
+            "object_lock_mode": "",
+            "object_lock_retain_until_date": "",
+            "override_provider": [],
+            "region": "us-east-1",
+            "server_side_encryption": "AES256",
+            "source": "./../website/script.js",
+            "source_hash": null,
+            "storage_class": "STANDARD",
+            "tags": {},
+            "tags_all": {},
+            "version_id": "",
+            "website_redirect": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "243768737939",
+            "bucket": "ayo-portfolio-site-12345",
+            "key": "script.js",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.portfolio"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_sns_topic",
+      "name": "alerts",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "application_failure_feedback_role_arn": "",
+            "application_success_feedback_role_arn": "",
+            "application_success_feedback_sample_rate": 0,
+            "archive_policy": "",
+            "arn": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts",
+            "beginning_archive_time": "",
+            "content_based_deduplication": false,
+            "delivery_policy": "",
+            "display_name": "",
+            "fifo_throughput_scope": "",
+            "fifo_topic": false,
+            "firehose_failure_feedback_role_arn": "",
+            "firehose_success_feedback_role_arn": "",
+            "firehose_success_feedback_sample_rate": 0,
+            "http_failure_feedback_role_arn": "",
+            "http_success_feedback_role_arn": "",
+            "http_success_feedback_sample_rate": 0,
+            "id": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts",
+            "kms_master_key_id": "",
+            "lambda_failure_feedback_role_arn": "",
+            "lambda_success_feedback_role_arn": "",
+            "lambda_success_feedback_sample_rate": 0,
+            "name": "cloudfront-alerts",
+            "name_prefix": "",
+            "owner": "243768737939",
+            "policy": "{\"Id\":\"__default_policy_ID\",\"Statement\":[{\"Action\":[\"SNS:GetTopicAttributes\",\"SNS:SetTopicAttributes\",\"SNS:AddPermission\",\"SNS:RemovePermission\",\"SNS:DeleteTopic\",\"SNS:Subscribe\",\"SNS:ListSubscriptionsByTopic\",\"SNS:Publish\"],\"Condition\":{\"StringEquals\":{\"AWS:SourceOwner\":\"243768737939\"}},\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Resource\":\"arn:aws:sns:us-east-1:243768737939:cloudfront-alerts\",\"Sid\":\"__default_statement_ID\"}],\"Version\":\"2008-10-17\"}",
+            "region": "us-east-1",
+            "signature_version": 0,
+            "sqs_failure_feedback_role_arn": "",
+            "sqs_success_feedback_role_arn": "",
+            "sqs_success_feedback_sample_rate": 0,
+            "tags": {},
+            "tags_all": {},
+            "tracing_config": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "arn": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_sns_topic_subscription",
+      "name": "email",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts:e7a6e671-66f9-44dc-b38b-261d0d58a387",
+            "confirmation_timeout_in_minutes": 1,
+            "confirmation_was_authenticated": false,
+            "delivery_policy": "",
+            "endpoint": "obadina111@gmail.com",
+            "endpoint_auto_confirms": false,
+            "filter_policy": "",
+            "filter_policy_scope": "",
+            "id": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts:e7a6e671-66f9-44dc-b38b-261d0d58a387",
+            "owner_id": "243768737939",
+            "pending_confirmation": false,
+            "protocol": "email",
+            "raw_message_delivery": false,
+            "redrive_policy": "",
+            "region": "us-east-1",
+            "replay_policy": "",
+            "subscription_role_arn": "",
+            "topic_arn": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "arn": "arn:aws:sns:us-east-1:243768737939:cloudfront-alerts:e7a6e671-66f9-44dc-b38b-261d0d58a387"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_sns_topic.alerts"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

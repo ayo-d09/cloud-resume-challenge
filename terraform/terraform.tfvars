@@ -1,0 +1,1 @@
+bucket_name = "ayo-portfolio-site-12345"
