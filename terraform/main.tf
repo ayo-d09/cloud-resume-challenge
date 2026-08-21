@@ -151,3 +151,35 @@ resource "aws_dynamodb_table" "visitor_count" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+resource "aws_iam_role" "visitor_counter_lambda" {
+  name               = "visitor-counter-lambda"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+resource "aws_iam_role_policy" "visitor_counter_lambda_policy" {
+  name   = "visitor-counter-lambda-policy"
+  role   = aws_iam_role.visitor_counter_lambda.id
+  policy = data.aws_iam_policy_document.visitor_counter_lambda_policy.json
+}
+data "aws_iam_policy_document" "visitor_counter_lambda_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["dynamodb:UpdateItem"]
+    resources = [aws_dynamodb_table.visitor_count.arn]
+  }
+}
+resource "aws_iam_role_policy_attachment" "visitor_counter_logs" {
+  role       = aws_iam_role.visitor_counter_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+

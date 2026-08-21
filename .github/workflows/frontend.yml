@@ -22,7 +22,7 @@ jobs:
 
       - name: Upload website to S3
         run: |
-          aws s3 sync ./website/ s3://ayo-portfolio-site-12345 \
+          aws s3 sync ./frontend/ s3://ayo-portfolio-site-12345 \
             --delete \
             --exclude "*.DS_Store"
             
