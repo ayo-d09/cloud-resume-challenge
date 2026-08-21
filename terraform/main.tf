@@ -1,4 +1,8 @@
 provider "aws" {
+  region = var.region
+}
+
+provider "aws" {
   alias  = "us-east-1"
   region = "us-east-1"
 }
@@ -135,3 +139,15 @@ resource "aws_sns_topic_subscription" "email" {
   protocol  = "email"
   endpoint  = "obadina111@gmail.com"
 }
+
+resource "aws_dynamodb_table" "visitor_count" {
+  name         = "visitor-count"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
