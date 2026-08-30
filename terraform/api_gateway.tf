@@ -4,7 +4,7 @@ resource "aws_apigatewayv2_api" "visitor_counter" {
   description   = "API Gateway for Visitor Counter Lambda Function"
 
   cors_configuration {
-    allow_origins = ["*"]
+    allow_origins = ["https://ayomideobadina.com", "https://www.ayomideobadina.com"]
     allow_methods = ["GET"]
     allow_headers = ["content-type"]
   }

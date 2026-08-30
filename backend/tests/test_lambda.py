@@ -71,3 +71,20 @@ def test_return_500_when_update_fails(dynamodb_table, monkeypatch):
     assert response["statusCode"] == 500
     body = json.loads(response["body"])
     assert body["message"] == "Unable to update visitor count."
+
+def test_cors_allows_known_origin(dynamodb_table):
+    from backend.lambda_function import lambda_handler
+
+    event = {"headers": {"origin": "https://ayomideobadina.com"}}
+    response = lambda_handler(event, {})
+
+    assert response["headers"]["Access-Control-Allow-Origin"] == "https://ayomideobadina.com"
+
+
+def test_cors_blocks_unknown_origin(dynamodb_table):
+    from backend.lambda_function import lambda_handler
+
+    event = {"headers": {"origin": "https://random-site.com"}}
+    response = lambda_handler(event, {})
+
+    assert response["headers"]["Access-Control-Allow-Origin"] == ""

@@ -7,6 +7,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "ayo-cloud-resume-terraform-state"
+    key            = "cloud-resume-challenge/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
 data "aws_acm_certificate" "portfolio" {
   provider    = aws.us-east-1
   domain      = "ayomideobadina.com"

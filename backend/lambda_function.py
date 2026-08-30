@@ -7,10 +7,15 @@ dynamodb = boto3.resource("dynamodb")
 ddbTable = os.environ.get("TABLE_NAME")
 table = dynamodb.Table(ddbTable)
 
+ALLOWED_ORIGINS = {"https://ayomideobadina.com", "https://www.ayomideobadina.com"}
+
 def lambda_handler(event, context):
+    origin = event.get("headers", {}).get("origin", "")
+    allow_origin = origin if origin in ALLOWED_ORIGINS else ""
+
     headers = {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": allow_origin,
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
     }
