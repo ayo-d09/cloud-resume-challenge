@@ -4,7 +4,7 @@ set -euo pipefail
 # Config
 BUCKET_NAME="ayo-portfolio-site-12345"
 AWS_REGION="us-east-1"
-WEBSITE_DIR="./website"
+WEBSITE_DIR="./frontend/"
 TERRAFORM_DIR="./terraform"
 
 # Checks

@@ -37,4 +37,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const visitorCount = document.getElementById("visitor-count");
+
+  async function getVisitorCount() {
+    try {
+        visitorCount.textContent = "Visitors: …";
+
+        const response = await fetch("https://9sokrohzx1.execute-api.us-east-1.amazonaws.com/count");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch visitor count");
+        }
+
+        const data = await response.json();
+        visitorCount.textContent = `Visitors: ${data.count}`;
+    } catch (error) {
+        console.error("Visitor counter error:", error);
+        visitorCount.textContent = "Visitors: —";
+    }
+}
+
+getVisitorCount();
+
 });

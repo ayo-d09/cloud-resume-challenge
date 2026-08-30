@@ -1,8 +1,21 @@
 provider "aws" {
+  region = var.region
+}
+
+provider "aws" {
   alias  = "us-east-1"
   region = "us-east-1"
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "ayo-cloud-resume-terraform-state"
+    key            = "cloud-resume-challenge/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
 data "aws_acm_certificate" "portfolio" {
   provider    = aws.us-east-1
   domain      = "ayomideobadina.com"
@@ -48,16 +61,16 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_root_object = "index.html"
   aliases             = ["ayomideobadina.com", "www.ayomideobadina.com"]
   origin {
-    domain_name = aws_s3_bucket.portfolio.bucket_regional_domain_name
-    origin_id   = "s3-origin"
+    domain_name              = aws_s3_bucket.portfolio.bucket_regional_domain_name
+    origin_id                = "s3-origin"
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
   }
 
   default_cache_behavior {
     target_origin_id       = "s3-origin"
     viewer_protocol_policy = "redirect-to-https"
-    allowed_methods = ["GET", "HEAD"]
-    cached_methods  = ["GET", "HEAD"]
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
 
     forwarded_values {
       query_string = false
@@ -67,7 +80,7 @@ resource "aws_cloudfront_distribution" "cdn" {
     }
   }
 
-viewer_certificate {
+  viewer_certificate {
     acm_certificate_arn      = data.aws_acm_certificate.portfolio.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
@@ -135,3 +148,47 @@ resource "aws_sns_topic_subscription" "email" {
   protocol  = "email"
   endpoint  = "obadina111@gmail.com"
 }
+
+resource "aws_dynamodb_table" "visitor_count" {
+  name         = "visitor-count"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+data "aws_iam_policy_document" "lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+resource "aws_iam_role" "visitor_counter_lambda" {
+  name               = "visitor-counter-lambda"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+resource "aws_iam_role_policy" "visitor_counter_lambda_policy" {
+  name   = "visitor-counter-lambda-policy"
+  role   = aws_iam_role.visitor_counter_lambda.id
+  policy = data.aws_iam_policy_document.visitor_counter_lambda_policy.json
+}
+data "aws_iam_policy_document" "visitor_counter_lambda_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["dynamodb:UpdateItem"]
+    resources = [aws_dynamodb_table.visitor_count.arn]
+  }
+}
+resource "aws_iam_role_policy_attachment" "visitor_counter_logs" {
+  role       = aws_iam_role.visitor_counter_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
