@@ -41,3 +41,4 @@ def lambda_handler(event, context):
             "headers": headers,
             "body": json.dumps({"message": "Unable to update visitor count."}),
         }
+# CI/CD pipeline test
