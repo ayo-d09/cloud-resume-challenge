@@ -1,7 +1,6 @@
 
 
-A personal portfolio website hosted on AWS that showcases my projects, resume, technical skills, about me section, and contact page through a secure, scalable, and fully cloud-native deployment.
-
+A personal portfolio and resume site hosted on AWS, extended into a full implementation of the Cloud Resume Challenge: a static frontend served over a secure CDN, backed by a serverless visitor-counter API, all provisioned with Terraform and deployed through two independent CI/CD pipelines.
 ---
 
 ## Demo
@@ -14,6 +13,7 @@ https://ayomideobadina.com
 
 The portfolio is deployed using a secure, CDN-backed architecture designed for high availability, low latency, and best-practice cloud security.
 
+FRONTEND 
 ```
                         ┌─────────────┐
                         │ Cloudflare  │  - DNS Management
@@ -29,62 +29,93 @@ The portfolio is deployed using a secure, CDN-backed architecture designed for h
                         └─────────────┘
 ```
 
+BACKEND - Visitor counter
+```
+   Browser
+      │
+      │  GET /count
+      v
+┌─────────────┐
+│ API Gateway │  - HTTP API
+└──────┬──────┘
+       │
+       v
+┌─────────────┐
+│   Lambda    │  - Python, atomic increment
+└──────┬──────┘
+       │
+       v
+┌─────────────┐
+│  DynamoDB   │  - visitor-count table
+└─────────────┘
+```
 ---
 
 ## AWS Services Used
 
-**S3**: Stores static website files (HTML, CSS, JavaScript)
-**CloudFront**: Global CDN for fast delivery and HTTPS enforcement 
-**ACM**: SSL/TLS certififcate provisioning 
-**IAM**: Secure access control (least privilege)
-**CloudWatch**: Monitoring and alerting 
+**S3 — Static website files (HTML, CSS, JS)**
+**CloudFront — Global CDN, HTTPS enforcement** 
+**ACM — SSL/TLS certificate provisioning**
+**API Gateway (HTTP API) — Public GET /count endpoint**
+**Lambda (Python 3.12) — Atomic visitor-count increment via boto3**
+**DynamoDB — Single-table, single-item visitor counter (on-demand billing)** 
+**IAM — Least-privilege roles for Lambda and CI/CD (OIDC, no static keys)**
+**CloudWatch — Monitoring and alerting (CloudFront 4xx alarm, Lambda logs)**
+**SNS — Alarm notifications**
+**Cloudflare is used for DNS instead of Route 53.**
 
-**Cloudflare** instead of Route 53 for DNS 
 
 
 ## Features
 
-* Secure static website hosting using S3 (no public bucket access)
-* Global content delivery via CloudFront
-* Infrastructure provisioned with Terraform (IaC)
-* Automated deployment using AWS CLI
-* HTTPS enabled with SSL/TLS certificates
-* Monitoring with CloudWatch
-* Production-style cloud architecture
-
+- Secure static hosting via S3 — no public bucket access, CloudFront Origin Access Control only
+- Serverless visitor counter with atomic DynamoDB updates (safe under concurrent requests)
+- CORS locked to the site's actual domains, not *
+- Infrastructure entirely defined in Terraform, with remote state (S3 + DynamoDB locking)
+- Two independent CI/CD pipelines (GitHub Actions), scoped by path filters:
+- Frontend — syncs to S3 and invalidates CloudFront on every push to frontend/
+- Backend — runs the Python test suite, then plans and applies Terraform on every push to backend/ or terraform/, gated behind passing tests
+- Authentication via GitHub OIDC — no long-lived AWS credentials stored anywhere
+- Unit tests for the Lambda (pytest + moto), run against a mocked DynamoDB
+- Production-style cloud architecture throughout
 ---
 
 ## Project Structure
 
 ```
-cloud-portfolio/
+cloud-resume-challenge/
 │
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml          # GitHub Actions CI/CD pipeline
+│       ├── frontend.yml        # S3 sync + CloudFront invalidation
+│       └── backend.yml         # pytest -> terraform plan/apply
 │
-├── website/                    # Frontend files
+├── frontend/                   # Static site
 │   ├── index.html
 │   ├── style.css
-│   ├── script.js
+│   ├── script.js                # includes visitor-counter fetch logic
 │   ├── favicon.png
 │   ├── robots.txt
 │   └── sitemap.xml
 │
+├── backend/                    # Visitor-counter API
+│   ├── lambda_function.py
+│   ├── requirements.txt         # Lambda runtime deps
+│   ├── requirements-dev.txt     # pytest, moto
+│   └── tests/
+│       └── test_lambda.py
+│
 ├── terraform/                  # Infrastructure as Code
-│   ├── main.tf
-│   ├── provider.tf
+│   ├── main.tf                  # provider, S3, CloudFront, ACM, remote backend
+│   ├── lambda.tf                # Lambda + packaging
+│   ├── api_gateway.tf           # API Gateway, integration, route, stage
 │   ├── variables.tf
 │   ├── outputs.tf
-│   ├── versions.tf             # (recommended)
-│   ├── backend.tf              # (if using remote state)
-│   ├── terraform.tfvars.example
-│   └── modules/                # (optional, if using modules)
+│   └── .terraform.lock.hcl
 │
 ├── .gitignore
-├── deploy.sh                   # Local deployment helper
-├── README.md
-├── LICENSE                     # Optional
+├── deploy.sh                   # Local frontend deployment helper
+└── README.md
 ```
 
 ---
@@ -99,47 +130,31 @@ cloud-portfolio/
 
 ---
 
-### 1. Clone the Repository
+**1. Clone the repository**
+bash
+git clone https://github.com/ayo-d09/cloud-resume-challenge.git
+cd cloud-resume-challenge
 
-```bash
-git clone https://github.com/ayo-d09/cloud-portfolio.git
-cd cloud-portfolio
-```
+**3. Run the backend tests**
+bash
+pip install -r backend/requirements-dev.txt
+pytest backend/tests -q
 
----
-
-### 2. Initialize Terraform
-
-```bash
+**4. Initialize and apply Terraform**
+bash
 cd terraform
 terraform init
-```
-
----
-
-### 3. Deploy Infrastructure
-
-```bash
+terraform plan
 terraform apply
-```
+This provisions the full stack: S3, CloudFront, ACM, DynamoDB, Lambda, API Gateway, IAM roles, and CloudWatch/SNS alerting.
 
-This will provision:
-
-* S3 bucket (private)
-* CloudFront distribution
-* IAM policies
-* Supporting resources
-
----
-
-### 4. Deploy Website
-
-```bash
+**5. Deploy the frontend**
+bash
+cd ..
 chmod +x deploy.sh
 ./deploy.sh
-```
+Uploads the site to S3 and invalidates the CloudFront cache.
 
-This uploads your website files to S3 and updates the live site.
 
 ---
 
@@ -165,22 +180,20 @@ CloudWatch is used for:
 
 ## What I Learned
 
-* Designing secure and scalable cloud architectures
-* Using Terraform for infrastructure as code
-* Configuring CloudFront with private S3 origins
-* Automating deployments with AWS CLI
-* Troubleshooting real-world issues like access permissions and caching
+* Designing and provisioning a serverless backend (API Gateway, Lambda, DynamoDB) alongside existing static infrastructure without disrupting it
+* Using DynamoDB's atomic update_item to avoid race conditions under concurrent requests, instead of a read-then-write pattern
+* Writing Lambda unit tests with pytest and moto, fully mocked and independent of real AWS
+* Migrating a Terraform project's state safely across a repo restructuring, and catching a state-drift issue before it caused damage
+* Setting up GitHub Actions OIDC federation with AWS, including debugging a malformed IAM trust-policy condition
+* Scoping a CI/CD IAM role's permissions by reading AccessDenied errors from real terraform plan runs, rather than granting broad access upfront
+* Locking down CORS to specific origins, including handling multiple valid origins (bare domain + www) dynamically in Lambda
 
 ---
 
-##  Possible Future Improvements
 
-* Add CI/CD pipeline (GitHub Actions)
-* Configure custom domain with Route 53
-* Enable access logging (S3 + CloudFront)
-* Improve frontend UI/UX
-* Add backend features (API Gateway + Lambda)
+## Blog Post
 
+From Static Portfolio to Full Cloud Resume Challenge: Adding a Serverless Backend on AWS (link once published)
 ---
 
 ## Author
