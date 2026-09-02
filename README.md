@@ -131,28 +131,35 @@ cloud-resume-challenge/
 ---
 
 **1. Clone the repository**
+
+```
 bash
 git clone https://github.com/ayo-d09/cloud-resume-challenge.git
 cd cloud-resume-challenge
-
+```
 **3. Run the backend tests**
+```
 bash
 pip install -r backend/requirements-dev.txt
 pytest backend/tests -q
-
+```
 **4. Initialize and apply Terraform**
+```
 bash
 cd terraform
 terraform init
 terraform plan
 terraform apply
+```
 This provisions the full stack: S3, CloudFront, ACM, DynamoDB, Lambda, API Gateway, IAM roles, and CloudWatch/SNS alerting.
 
 **5. Deploy the frontend**
+```
 bash
 cd ..
 chmod +x deploy.sh
 ./deploy.sh
+```
 Uploads the site to S3 and invalidates the CloudFront cache.
 
 
